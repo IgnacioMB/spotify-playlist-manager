@@ -1,0 +1,6 @@
+secrets.json
+tokens.json
+**/*.json
+**/*.csv
+.idea
+__pycache__
