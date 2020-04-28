@@ -7,6 +7,7 @@ import json
 import datetime
 import sys
 import requests
+import re
 
 
 def read_jsonfile_as_dict(filename):
@@ -360,4 +361,16 @@ def unpack_list_series(series):
     :param series:
     :return: series
     """
-    return pd.Series(sum([eval(x) for x in list(series.values)], []))
+    return pd.Series(sum(list(series.values), []))
+
+
+def only_alphanumeric(string):
+
+    """
+    Strips all non alphanumeric characters from a string
+
+    :param string: str with or without non alphanumeric chars
+    :return: str with only alphanumeric chars
+    """
+
+    return re.sub(re.compile('\W'), '', string)
