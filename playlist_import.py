@@ -12,11 +12,6 @@ print("\nThis script will import a playlist (in csv) into a Spotify user's accou
 playlist_name = "clasica"
 csv_filename = f"{playlist_name}.csv"
 
-# read the playlist csv file
-playlist_df = read_playlist_csv(csv_filename=csv_filename, folder="playlists")
-
-playlist_df.sort_values(by="added_at", ascending=True, inplace=True)
-
 # read the credentials to modify user private playlists
 spotify_credentials = read_jsonfile_as_dict("tokens.json")
 
@@ -28,6 +23,11 @@ if credential_check(desired_scope="playlist-modify-private", credentials_dict=sp
     user_details = get_spotify_profile_details(access_token)
 
     user_id = user_details["id"]
+
+    # read the playlist csv file
+    playlist_df = read_csv_file(csv_filename=csv_filename, folder=user_id)
+
+    playlist_df.sort_values(by="added_at", ascending=True, inplace=True)
 
     new_playlist_name = playlist_name + " copy"
 
