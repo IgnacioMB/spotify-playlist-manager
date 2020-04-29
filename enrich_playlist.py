@@ -9,11 +9,8 @@ print("\nThis script reads a playlist csv file and enriches it with the audio fe
 print("It also adds the album detailed info to each song")
 print("The outputs is stored in a new playlist csv file in the './enriched_playlists' folder")
 
-playlist_name = 'MusicIsLife!'
+playlist_name = 'clasica'
 csv_filename = f"{playlist_name}.csv"
-
-# read the playlist csv file
-playlist_df = read_playlist_csv(csv_filename=csv_filename, folder="playlists")
 
 # reading the credentials to read user private playlists
 spotify_credentials = read_jsonfile_as_dict("tokens.json")
@@ -22,6 +19,12 @@ if credential_check(desired_scope="playlist-read-private", credentials_dict=spot
 
     access_token = spotify_credentials["access_token"]
     refresh_token = spotify_credentials["refresh_token"]
+
+    user_details = get_spotify_profile_details(access_token)
+    user_id = user_details["id"]
+
+    # read the playlist csv file
+    playlist_df = read_csv_file(csv_filename=csv_filename, folder=user_id)
 
     audio_feature_list = []
     album_detail_list = []
@@ -82,13 +85,7 @@ if credential_check(desired_scope="playlist-read-private", credentials_dict=spot
     playlist_df.drop(labels=["album_details"], axis=1, inplace=True)
 
     # export enriched df
-
-    try:
-        playlist_df.to_csv(f"enriched_playlists/{playlist_name}-enriched.csv")
-        print("\nEnriched playlist csv exported successfully to 'enriched_playlists' folder ")
-    except:
-        print("\nError - Export of enriched playlist csv failed")
-        sys.exit(1)
+    export_playlist_csv(f"{playlist_name}_enriched", playlist_df, user_id)
 
 else:
     print("\nError - Credentials are not valid")
