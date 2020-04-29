@@ -33,17 +33,8 @@ if credential_check(desired_scope="playlist-read-private", credentials_dict=spot
 
     if mod_selector == "one":
 
-        file_does_exist = False
-
-        while not file_does_exist:
-            playlist_name = input("\nType the name of the playlist:")
-            csv_filename = f"{playlist_name}.csv"
-            file_does_exist = file_exists(filename=csv_filename, folder=user_id)
-            if not file_does_exist:
-                print("Wrong playlist name, try again")
-
         # read the playlist csv file
-        playlist_df = read_csv_file(csv_filename=csv_filename, folder=user_id)
+        playlist_name, playlist_df = load_playlist_from_input(playlist_folder=user_id)
 
     if mod_selector == "all":
 

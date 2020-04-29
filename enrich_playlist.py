@@ -9,9 +9,6 @@ print("\nThis script reads a playlist csv file and enriches it with the audio fe
 print("It also adds the album detailed info to each song")
 print("The outputs is stored in a new playlist csv file in the './enriched_playlists' folder")
 
-playlist_name = 'clasica'
-csv_filename = f"{playlist_name}.csv"
-
 # reading the credentials to read user private playlists
 spotify_credentials = read_jsonfile_as_dict("tokens.json")
 
@@ -23,8 +20,8 @@ if credential_check(desired_scope="playlist-read-private", credentials_dict=spot
     user_details = get_spotify_profile_details(access_token)
     user_id = user_details["id"]
 
-    # read the playlist csv file
-    playlist_df = read_csv_file(csv_filename=csv_filename, folder=user_id)
+    # read the playlist csv
+    playlist_name, playlist_df = load_playlist_from_input(playlist_folder=user_id)
 
     audio_feature_list = []
     album_detail_list = []

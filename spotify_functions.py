@@ -240,9 +240,9 @@ def export_playlist_csv(playlist_name, playlist_df, output_folder):
 
     try:
         playlist_df.to_csv(f"{output_folder}/{playlist_name}.csv")
-        print("Formatted csv exported correctly")
+        print("\nFormatted csv exported correctly")
     except:
-        print(f"Error - Outputting playlist csv for {playlist_name} failed")
+        print(f"\nError - Outputting playlist csv for {playlist_name} failed")
 
 
 def get_spotify_profile_details(access_token):
@@ -469,3 +469,33 @@ def only_alphanumeric(string):
     """
 
     return re.sub(re.compile('\W'), '', string)
+
+
+def load_playlist_from_input(playlist_folder):
+    """
+
+    Prompts the user to provide the name of a playlist
+    keeps asking until it gets a valid playlist name
+    that exists in the given folder
+
+    Upon success it returns a tuple
+    with the the playlist's and DataFrame
+
+    :param playlist_folder: str
+    :return: tuple(playlist_name, DataFrame of the playlist)
+    """
+    file_does_exist = False
+
+    playlist_name = ""
+    csv_filename = ""
+
+    while not file_does_exist:
+        playlist_name = input("\nType the name of the playlist:")
+        csv_filename = f"{playlist_name}.csv"
+        file_does_exist = file_exists(filename=csv_filename, folder=playlist_folder)
+        if not file_does_exist:
+            print("Wrong playlist name, try again")
+
+    playlist_df = read_csv_file(csv_filename=csv_filename, folder=playlist_folder)
+
+    return playlist_name, playlist_df
