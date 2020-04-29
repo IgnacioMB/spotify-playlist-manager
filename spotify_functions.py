@@ -8,6 +8,7 @@ import datetime
 import sys
 import requests
 import re
+import os
 
 
 def read_jsonfile_as_dict(filename):
@@ -176,6 +177,74 @@ def export_playlist_to_jsons(track_count, playlist_id, access_token, playlist_na
     return successful, number_of_pages
 
 
+def playlist_jsons_to_csv(playlist_name, playlist_pages, jsons_folder):
+
+    """
+    Reads the paginated json files of a playlist
+    and combines them into a DataFrame with all the playlist tracks
+
+    :param playlist_name: str
+    :param playlist_pages: int with number of paginated json files
+    :param jsons_folder: path to where json files are stored
+    :return: a DataFrame with all the tracks
+    """
+
+    print(f"\nReading tracks from playlist: {playlist_name}")
+
+    playlist_df = pd.DataFrame()
+
+    current_page = 1
+
+    while current_page <= playlist_pages:
+
+        print(f"Parsing page {current_page} out of {playlist_pages}...")
+
+        current_filename = f"{playlist_name} - {current_page}.json"
+
+        current_json = read_jsonfile_as_dict(f"{jsons_folder}/{current_filename}")
+
+        current_df = pd.DataFrame(current_json["items"])
+
+        current_df["name"] = current_df["track"].apply(lambda x: x['name'])
+        current_df["artists"] = current_df["track"].apply(lambda track: [artist["name"] for artist in track["artists"]])
+        current_df['album'] = current_df["track"].apply(lambda x: x["album"]["name"])
+        current_df['album_release_date'] = current_df["track"].apply(lambda x: x["album"]["release_date"])
+        current_df['album_uri'] = current_df["track"].apply(lambda x: x["album"]["uri"])
+        current_df['spotify_uri'] = current_df["track"].apply(lambda x: x["uri"])
+
+        current_df = current_df[['name', 'artists', 'album', 'album_release_date', 'album_uri', 'added_at', 'spotify_uri']]
+
+        playlist_df = pd.concat([playlist_df, current_df])
+
+        if current_page == playlist_pages:
+
+            playlist_df.reset_index(inplace=True)
+            playlist_df.drop(labels=['index'], axis=1, inplace=True)
+            return playlist_df
+
+        else:
+            current_page += 1
+
+
+def export_playlist_csv(playlist_name, playlist_df, output_folder):
+    """
+    Exports a given playlist to a csv file with all the tracks
+    :param playlist_df: DataFrame
+    :param output_folder: str
+    :return:
+    """
+
+    # if the output folder does not exist, we create it
+    if not os.path.isdir(output_folder):
+        os.mkdir(output_folder)
+
+    try:
+        playlist_df.to_csv(f"{output_folder}/{playlist_name}.csv")
+        print("Formatted csv exported correctly")
+    except:
+        print(f"Error - Outputting playlist csv for {playlist_name} failed")
+
+
 def get_spotify_profile_details(access_token):
     """
     Returns a dictionary with the profile details of the user identified by the token
@@ -273,10 +342,10 @@ def add_song_to_playlist(playlist_id, access_token, song_uri, position):
     return added, details
 
 
-def read_playlist_csv(csv_filename, folder):
+def read_csv_file(csv_filename, folder):
     """
-    Reads a playlist csv file into a DataFrame
-    :param csv_filename:
+    Reads a csv file into a DataFrame
+    :param csv_filename: str
     :return: DataFrame
     """
 
