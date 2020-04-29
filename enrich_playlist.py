@@ -85,7 +85,7 @@ if credential_check(desired_scope="playlist-read-private", credentials_dict=spot
     playlist_df.drop(labels=["album_details"], axis=1, inplace=True)
 
     # export enriched df
-    export_playlist_csv(f"{playlist_name}_enriched", playlist_df, user_id)
+    export_playlist_csv(playlist_name, playlist_df, user_id)
 
 else:
     print("\nError - Credentials are not valid")
