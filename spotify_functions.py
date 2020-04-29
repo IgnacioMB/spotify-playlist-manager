@@ -358,6 +358,32 @@ def read_csv_file(csv_filename, folder):
         print(f"\nError - Could not find the file: {csv_filename} in the folder {folder}")
 
 
+def read_playlist_folder(folder):
+
+    """
+    Reads and combine all playlist csv files inside a folder into a DataFrame
+    :param folder: str with the path i.e. ./playlists
+    :return:
+    """
+
+    contents = os.listdir(folder)
+
+    output_df = pd.DataFrame()
+
+    for filename in contents:
+        playlist_df = read_csv_file(filename, folder)
+        output_df = pd.concat([output_df, playlist_df])
+
+    output_df.reset_index(inplace=True)
+
+    return output_df
+
+
+def file_exists(filename, folder):
+
+    return os.path.isfile(f"{folder}/{filename}")
+
+
 def get_track_audio_features(track_id, access_token):
     """
     Retrieves the audio features of a track

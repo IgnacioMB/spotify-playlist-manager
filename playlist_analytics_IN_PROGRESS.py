@@ -9,53 +9,88 @@ BASED ON IT
 from spotify_functions import *
 import matplotlib.pyplot as plt
 
-playlist_name = 'MusicIsLife!'
-csv_filename = f"{playlist_name}-enriched.csv"
+# reading the credentials to read user name
+spotify_credentials = read_jsonfile_as_dict("tokens.json")
 
-# read the playlist csv file
-playlist_df = read_playlist_csv(csv_filename=csv_filename, folder="enriched_playlists")
+if credential_check(desired_scope="playlist-read-private", credentials_dict=spotify_credentials):
 
-# the str field artists that contains the artist names for each song should be evaluated to a list
-playlist_df["artists"] = playlist_df["artists"].apply(lambda x: eval(x))
+    access_token = spotify_credentials["access_token"]
+    refresh_token = spotify_credentials["refresh_token"]
 
-# artist names might contain alphanumeric characters
-# that creates problems while generating visualizations
-# therefore we strip all non alphanumeric chars from them
-playlist_df["artists_stripped"] = playlist_df["artists"].apply(lambda my_list: [only_alphanumeric(item) for item in my_list])
+    user_details = get_spotify_profile_details(access_token)
 
-"""
-ARTIST INSIGHTS
-"""
+    user_id = user_details["id"]
 
-# calculate top 20 of most popular artists by song count in playlist
-unpacked_artist_series = unpack_list_series(playlist_df["artists_stripped"])
+    print("\nSelect the analysis modality")
 
-artist_frequency_table = unpacked_artist_series.value_counts()
+    mod_selector = ""
+    while mod_selector not in ("one", "all"):
+        mod_selector = input("\nType (one) for analyzing a single playlist or (all) for analyzing all:")
+        if mod_selector not in ("one", "all"):
+            print("\nError selecting the analysis modality, invalid value given")
 
-top_20 = artist_frequency_table.head(20)
+    print(f"Input accepted. Your value given: {mod_selector}")
 
-print("\nTop 20 artists by song count in playlist\n")
+    if mod_selector == "one":
 
-print(top_20.to_string())
+        file_does_exist = False
 
-# analyze concentration of user liked songs per artist
+        while not file_does_exist:
+            playlist_name = input("\nType the name of the playlist:")
+            csv_filename = f"{playlist_name}.csv"
+            file_does_exist = file_exists(filename=csv_filename, folder=user_id)
+            if not file_does_exist:
+                print("Wrong playlist name, try again")
 
-avg_songs_per_artist = artist_frequency_table.mean()
-print(f"\nAverage song count per artist in the playlist: {avg_songs_per_artist}")
+        # read the playlist csv file
+        playlist_df = read_csv_file(csv_filename=csv_filename, folder=user_id)
 
-# plot top 20 artist by song count in playlist as bar plot
+    if mod_selector == "all":
 
-fig = plt.figure()
+        playlist_df = read_playlist_folder(folder=user_id)
 
-axes = fig.add_axes([0.1, 0.3, 0.8, 0.6])
+    # the str field artists that contains the artist names for each song should be evaluated to a list
+    playlist_df["artists"] = playlist_df["artists"].apply(lambda x: eval(x))
 
-axes.set_xlabel("Artist")
-axes.set_ylabel("Songs in playlist")
-axes.set_title(f"Top 20 Artists in Playlist {playlist_name}")
+    # artist names might contain alphanumeric characters
+    # that creates problems while generating visualizations
+    # therefore we strip all non alphanumeric chars from them
+    playlist_df["artists_stripped"] = playlist_df["artists"].apply(lambda my_list: [only_alphanumeric(item) for item in my_list])
 
-top_20.plot(kind="bar", axes=axes)
+    """
+    ARTIST INSIGHTS
+    """
 
-plt.show()
+    # calculate top 20 of most popular artists by song count in playlist
+    unpacked_artist_series = unpack_list_series(playlist_df["artists_stripped"])
 
+    artist_frequency_table = unpacked_artist_series.value_counts()
 
-print("")
+    top_20 = artist_frequency_table.head(20)
+
+    print("\nTop 20 artists by song count in playlist\n")
+
+    print(top_20.to_string())
+
+    # analyze concentration of user liked songs per artist
+
+    avg_songs_per_artist = artist_frequency_table.mean()
+    print(f"\nAverage song count per artist")
+
+    # plot top 20 artist by song count in playlist as bar plot
+
+    fig = plt.figure()
+
+    axes = fig.add_axes([0.1, 0.4, 0.8, 0.5])
+
+    axes.set_xlabel("Artist")
+    axes.set_ylabel("Songs in playlist")
+    axes.set_title(f"Top 20 Artists by song count")
+
+    top_20.plot(kind="bar", axes=axes)
+
+    plt.show()
+
+else:
+    print("\nError - Credentials are not valid")
+    sys.exit(1)
