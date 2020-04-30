@@ -20,23 +20,7 @@ spotify_clsc = spotify_secrets["client_secret"]
 
 redirect_uri = "https://example.com/callback/"
 
-print("\nSelect the scope of the credentials generated")
-
-scope_selector = ""
-while scope_selector not in ("r", "m"):
-    scope_selector = input("\nType (r) for read access or (m) for modify access:")
-    if scope_selector not in ("r", "m"):
-        print("\nError selecting the scope, invalid value given")
-
-print(f"Input accepted. Your value given: {scope_selector}")
-
-if scope_selector == "r":
-    scope = "playlist-read-private"
-elif scope_selector == "m":
-    scope = "playlist-modify-private"
-else:
-    print("Error selecting the scope, invalid value given")
-    sys.exit(1)
+scope = "playlist-read-private playlist-modify-private"
 
 # get the code
 query = "https://accounts.spotify.com/authorize"

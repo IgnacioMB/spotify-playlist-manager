@@ -28,7 +28,7 @@ def read_jsonfile_as_dict(filename):
     return json_dict
 
 
-def credential_check(desired_scope, credentials_dict):
+def credential_check(required_scope, credentials_dict):
 
     """
 
@@ -38,7 +38,7 @@ def credential_check(desired_scope, credentials_dict):
     Returns boolean
     If everything ok returns True, of not False and outputs error to console
 
-    :param desired_scope: string with the scope i.e. 'playlist-read-private'
+    :param required_scope: string with the scope i.e. 'playlist-read-private'
     :param credentials_dict: dictionary with the credentials i.e.
 
     {
@@ -59,11 +59,11 @@ def credential_check(desired_scope, credentials_dict):
     expiration_time = datetime.datetime.strptime(credentials_dict["expiration_time"], "%Y-%m-%d %H:%M:%S")
 
     # scope check
-    if scope == desired_scope:
+    if required_scope in scope:
         print("\nScope check approved")
 
     else:
-        print(f"\nScope check failed - Scope needed: {desired_scope} Scope found: {scope}")
+        print(f"\nScope check failed - Scope needed: {required_scope} Scope found: {scope}")
         check = False
 
     # expiration check
