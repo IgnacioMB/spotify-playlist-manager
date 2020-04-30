@@ -18,7 +18,7 @@ spotify_secrets = read_jsonfile_as_dict("secrets.json")
 spotify_clid = spotify_secrets["client_id"]
 spotify_clsc = spotify_secrets["client_secret"]
 
-redirect_uri = "https://example.com/callback/"
+redirect_uri = "https://pneumonicword.htmlpasta.com/"
 
 scope = "playlist-read-private playlist-modify-private"
 
@@ -33,16 +33,16 @@ response1 = requests.get(url=query)
 
 if response1.status_code == 200:
 
-    print("\nClick on the following link and copy the code param of the redirected url")
+    print("\nClick here to grant spotify-playlist-manager access to your account and copy the temporary code")
     print(response1.url)
 
     # copy the code in a variable
-    code = input("\nPaste your code here:")
+    code = input("\nPaste your temporary code here:")
 
     # request refresh and access tokens
     query2 = "https://accounts.spotify.com/api/token"
 
-    body = {"grant_type": "authorization_code", "code": code, "redirect_uri": "https://example.com/callback/"}
+    body = {"grant_type": "authorization_code", "code": code, "redirect_uri": redirect_uri}
 
     body_url_encoded = urlencode(body)
 

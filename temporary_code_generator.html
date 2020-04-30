@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spotify Playlist Manager</title>
+</head>
+<body>
+<h1>Spotify Playlist Manager </h1>
+<h3>Thank you for giving us permission to access your Spotify Account's Data! </h3>
+<ul>
+<li>The following temporary code will allow us to read your playlists</li>
+<li>It will only be valid for one hour starting from now</li>
+</ul>
+<p>Your temporary code: </p>
+<input type="text" value="" id="demo">
+
+<button type="button" onclick="copyCode()">Copy code</button>
+
+<p>You can find more info about the project on <a href="https://github.com/IgnacioMB/spotify-playlist-manager">our GitHub repository</a></p>
+
+<script>
+
+function getUrlVars() {
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+        vars[key] = value;
+    });
+    return vars;
+}
+
+function copyCode() {
+  /* Get the text field */
+  var copyText = document.getElementById("demo");
+
+  /* Select the text field */
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+
+  /* Copy the text inside the text field */
+  document.execCommand("copy");
+
+  /* Alert the copied text */
+  alert("Successfully copied the code to clipboard!!");
+}
+
+document.getElementById("demo").value = getUrlVars()["code"];
+</script>
+
+</body>
+</html>
