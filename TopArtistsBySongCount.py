@@ -1,9 +1,13 @@
 """
-SCRIPT TO ANALYZE THE SONGS OF A PLAYLIST
-AND DRAW INSIGHTS ABOUT THE MUSIC TASTE OF THE USER
-BASED ON IT
+SCRIPT TO FIND OUT THE USERS TOP ARTISTS BY SONG COUNT
 
-        ONGOING!!!!! BARELY STARTED EXPLORATORY ANALYSIS
+You can choose to build the top considering:
+
+-a single playlist
+-all of the playlists within a folder (by default the user folder created during the playlist export)
+
+It will show you the ranking on console and generate a bar plot
+
 """
 
 from spotify_functions import *
