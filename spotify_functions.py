@@ -96,6 +96,7 @@ def get_all_playlists_df(access_token):
 
     """
     Reads the catalogue of playlists created or followed by the user and returns it as a DataFrame
+    reads a maximum of 50 playlists
     :param access_token: string
     :return: DataFrame
     """
@@ -103,6 +104,7 @@ def get_all_playlists_df(access_token):
     successful = False
 
     query = "https://api.spotify.com/v1/me/playlists"
+    query += "?limit=50"
 
     headers = {"Authorization": f"Bearer {access_token}"}
 
@@ -335,7 +337,7 @@ def export_playlist_csv(playlist_name, playlist_df, output_folder):
         os.mkdir(output_folder)
 
     try:
-        playlist_df.to_csv(f"{output_folder}/{playlist_name}.csv")
+        playlist_df.to_csv(f"{output_folder}/{playlist_name}.csv", index=False)
         print("\nFormatted csv exported correctly")
     except:
         print(f"\nError - Outputting playlist csv for {playlist_name} failed")
@@ -447,7 +449,6 @@ def read_csv_file(csv_filename, folder):
 
     try:
         playlist_df = pd.read_csv(f"{folder}/{csv_filename}")
-        playlist_df.drop(labels=["Unnamed: 0"], axis=1, inplace=True)
         return playlist_df
 
     except FileNotFoundError:
@@ -471,9 +472,9 @@ def read_playlist_folder(folder):
         playlist_df = read_csv_file(filename, folder)
         output_df = pd.concat([output_df, playlist_df])
 
-    output_df.reset_index(inplace=True)
-
     output_df.drop_duplicates(subset="spotify_uri", inplace=True)
+    output_df = output_df[output_df["artists"].notna()]
+    output_df.reset_index(drop=True, inplace=True)
 
     return output_df
 
