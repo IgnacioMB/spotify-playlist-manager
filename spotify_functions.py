@@ -28,7 +28,7 @@ def read_jsonfile_as_dict(filename):
     return json_dict
 
 
-def credential_check(required_scope, credentials_dict):
+def credential_check(credentials_dict, required_scopes=None):
 
     """
 
@@ -38,7 +38,8 @@ def credential_check(required_scope, credentials_dict):
     Returns boolean
     If everything ok returns True, of not False and outputs error to console
 
-    :param required_scope: string with the scope i.e. 'playlist-read-private'
+    :param required_scopes: list of strings i.e. ['playlist-read-private', playlist-modify-private]
+    it can also be None, in which case the scope check will always approve
     :param credentials_dict: dictionary with the credentials i.e.
 
     {
@@ -55,16 +56,26 @@ def credential_check(required_scope, credentials_dict):
 
     check = True
 
-    scope = credentials_dict["scope"]
+    scopes_in_dict = credentials_dict["scope"].split(" ")
     expiration_time = datetime.datetime.strptime(credentials_dict["expiration_time"], "%Y-%m-%d %H:%M:%S")
 
     # scope check
-    if required_scope in scope:
-        print("\nScope check approved")
+    if required_scopes is None:
+        pass
 
+    elif isinstance(required_scopes, list):
+        for req_scope in required_scopes:
+            if req_scope not in scopes_in_dict:
+                print(f"\nScope check failed - Scope needed {req_scope} not found in credential dict")
+                check = False
+                return check
     else:
-        print(f"\nScope check failed - Scope needed: {required_scope} Scope found: {scope}")
+        print(f"\nWrong parameter type for 'required_scopes' expected a list, received a {type(required_scopes)}")
         check = False
+        return check
+
+    if check:
+        print("\nScope check approved")
 
     # expiration check
     current_time = datetime.datetime.now()

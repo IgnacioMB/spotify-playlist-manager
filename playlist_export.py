@@ -8,10 +8,11 @@ print("\nThis script will export all playlists of a Spotify user account into .c
 print("It assumes you have already generated the necessary credentials and stored them in './tokens.json'")
 print("If you have not, use './get_credentials.py' to generate a new set of credentials")
 
-# reading the credentials to read user private playlists
+# reading the credentials
 spotify_credentials = read_jsonfile_as_dict("tokens.json")
 
-if credential_check(required_scope="playlist-read-private", credentials_dict=spotify_credentials):
+if credential_check(required_scopes=["playlist-read-private", "user-library-read"],
+                    credentials_dict=spotify_credentials):
 
     access_token = spotify_credentials["access_token"]
     refresh_token = spotify_credentials["refresh_token"]
