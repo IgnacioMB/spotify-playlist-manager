@@ -20,7 +20,7 @@ spotify_clsc = spotify_secrets["client_secret"]
 
 redirect_uri = "https://hexastyleoven.htmlpasta.com/"
 
-scope = "playlist-read-private playlist-modify-private"
+scope = "playlist-read-private playlist-modify-private user-library-read"
 
 # get the code
 query = "https://accounts.spotify.com/authorize"

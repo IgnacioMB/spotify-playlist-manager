@@ -129,6 +129,91 @@ def get_all_playlists_df(access_token):
     return successful, output
 
 
+def get_amount_of_added_tracks(access_token):
+    """
+    Retrieves the number of tracks the user has added to his library
+    :param access_token: valid access token
+    :return: the number
+    """
+
+    limit = 1
+    offset = 0
+
+    query = "https://api.spotify.com/v1/me/tracks"
+    query += f"?limit={limit}"
+    query += f"&offset={offset}"
+
+    headers = {"Authorization": f"Bearer {access_token}",
+               "Content-Type": "application/json"}
+
+    response = requests.get(url=query, headers=headers)
+
+    if response.status_code == 200:
+        return response.json()["total"]
+
+    else:
+        print(f"\nError: Getting count of user added tracks failed - Status code: {response.status_code}")
+
+
+def export_user_added_tracks_to_jsons(playlist_name, access_token, output_folder):
+    """
+    Exports a given playlist to a series of paginated JSON files
+    :param playlist_name: str name you want to give to this playlist i.e. 'Liked Songs'
+    :param output_folder: str with the path
+    :param access_token: str has to be valid and have the scope 'user-library-read'
+    :return: a boolean indicating success and outputs the json files to a folder and an integer with number of pages
+    """
+
+    track_count = get_amount_of_added_tracks(access_token=access_token)
+
+    successful = False
+
+    limit = 50  # set to the max allowed by API
+    offset = 0
+
+    full_pages = track_count // limit
+
+    if track_count % limit > 0:
+        partial_pages = 1
+    else:
+        partial_pages = 0
+
+    number_of_pages = full_pages + partial_pages
+
+    current_page = 1
+
+    while current_page <= number_of_pages:
+
+        query = "https://api.spotify.com/v1/me/tracks"
+        query += f"?limit={limit}"
+        query += f"&offset={offset}"
+
+        headers = {"Authorization": f"Bearer {access_token}",
+                   "Content-Type": "application/json"}
+
+        response = requests.get(url=query, headers=headers)
+
+        if response.status_code == 200:
+
+            successful = True
+
+            current_playlist_json = response.json()
+
+            with open(f"{output_folder}/{playlist_name} - {current_page}.json", mode="w+") as output:
+                json.dump(current_playlist_json, output)
+
+            offset += limit
+            current_page += 1
+
+        else:
+            print(f"Error while exporting tracks of playlist {playlist_name} - Status code: {response.status_code}")
+            break
+
+    print(f"Playlist {playlist_name} exported successfully to paginated json files")
+
+    return successful, number_of_pages
+
+
 def export_playlist_to_jsons(track_count, playlist_id, access_token, playlist_name, output_folder):
 
     """

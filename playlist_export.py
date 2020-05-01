@@ -61,6 +61,20 @@ if credential_check(required_scopes=["playlist-read-private", "user-library-read
                             playlist_df=playlist_df,
                             output_folder=user_id)
 
+    # extract liked songs playlist (not considered a user playlist by Spotify)
+    ls_playlist_name = 'Liked Songs'
+    ls_successful, ls_number_of_pages = export_user_added_tracks_to_jsons(playlist_name=ls_playlist_name,
+                                                                          access_token=access_token,
+                                                                          output_folder="temp")
+
+    liked_songs_df = playlist_jsons_to_csv(playlist_name=ls_playlist_name,
+                                           playlist_pages=ls_number_of_pages,
+                                           jsons_folder="temp")
+
+    export_playlist_csv(playlist_name=ls_playlist_name,
+                        playlist_df=liked_songs_df,
+                        output_folder=user_id)
+
     print(f"\nSuccess - Export of user {user_id} playlists completed")
     print(f"\nOutput folder: {user_id}")
 
