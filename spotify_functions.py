@@ -458,6 +458,7 @@ def read_playlist_folder(folder):
 
     """
     Reads and combine all playlist csv files inside a folder into a DataFrame
+    deletes duplicate songs in case several of the user playlists contain the same songs
     :param folder: str with the path i.e. ./playlists
     :return:
     """
@@ -471,6 +472,8 @@ def read_playlist_folder(folder):
         output_df = pd.concat([output_df, playlist_df])
 
     output_df.reset_index(inplace=True)
+
+    output_df.drop_duplicates(subset="spotify_uri", inplace=True)
 
     return output_df
 
