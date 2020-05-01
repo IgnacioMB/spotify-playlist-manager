@@ -216,6 +216,38 @@ def export_user_added_tracks_to_jsons(playlist_name, access_token, output_folder
     return successful, number_of_pages
 
 
+def get_user_top_artists(access_token, limit, offset, time_range):
+
+    if limit > 50:
+        print("Error: limit exceeds Spotify Web API specs")
+        print("Checkout documentation on:")
+        print("https://developer.spotify.com/documentation/web-api/reference/personalization/get-users-top-artists-and-tracks/")
+
+        return None
+
+    query = f"https://api.spotify.com/v1/me/top/artists"
+    query += f"?limit={limit}"
+    query += f"&offset={offset}"
+    query += f"&time_range={time_range}"
+
+    headers = {"Authorization": f"Bearer {access_token}"}
+
+    response = requests.get(url=query, headers=headers)
+
+    if response.status_code == 200:
+        artists_json = response.json()
+
+    else:
+        print(f"\nError - retrieving the top of most listened artists failed - Status code: {response.status_code}")
+        sys.exit(1)
+
+    artists_df = pd.DataFrame(artists_json['items'])
+
+    artists_df = artists_df[["id", "name", "popularity", "genres", "uri"]]
+
+    return artists_df
+
+
 def export_playlist_to_jsons(track_count, playlist_id, access_token, playlist_name, output_folder):
 
     """
