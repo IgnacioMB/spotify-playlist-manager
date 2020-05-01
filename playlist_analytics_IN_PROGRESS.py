@@ -66,7 +66,7 @@ if credential_check(required_scopes=None, credentials_dict=spotify_credentials):
     # analyze concentration of user liked songs per artist
 
     avg_songs_per_artist = artist_frequency_table.mean()
-    print(f"\nAverage song count per artist")
+    print(f"\nAverage song count per artist: {avg_songs_per_artist}")
 
     # plot top 20 artist by song count in playlist as bar plot
 
