@@ -18,7 +18,7 @@ spotify_secrets = read_jsonfile_as_dict("secrets.json")
 spotify_clid = spotify_secrets["client_id"]
 spotify_clsc = spotify_secrets["client_secret"]
 
-redirect_uri = "https://pneumonicword.htmlpasta.com/"
+redirect_uri = "https://hexastyleoven.htmlpasta.com/"
 
 scope = "playlist-read-private playlist-modify-private"
 
