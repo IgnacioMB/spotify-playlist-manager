@@ -10,10 +10,10 @@ from urllib.parse import urlencode
 from spotify_functions import *
 
 print("\nThis assistant generates a file with a temporary set of credentials to read or modify your Spotify playlists.")
-print("It assumes you have registered your app and stored your client_id and client_secret in './secrets.json.'")
+print("It assumes you have registered your app and stored your client_id and client_secret in './spotify_secrets.json.'")
 print("More info on: https://developer.spotify.com/documentation/general/guides/authorization-guide/")
 
-spotify_secrets = read_jsonfile_as_dict("secrets.json")
+spotify_secrets = read_jsonfile_as_dict("spotify_secrets.json")
 
 spotify_clid = spotify_secrets["client_id"]
 spotify_clsc = spotify_secrets["client_secret"]
@@ -67,10 +67,10 @@ if response1.status_code == 200:
         token_json["creation_time"] = creation_time.strftime("%Y-%m-%d %H:%M:%S")
         token_json["expiration_time"] = expiration_time.strftime("%Y-%m-%d %H:%M:%S")
 
-        with open("tokens.json", mode="w+") as token_fl:
+        with open("spotify_tokens.json", mode="w+") as token_fl:
             json.dump(token_json, token_fl)
 
-        print("\nToken json exported to file './tokens.json'")
+        print("\nToken json exported to file './spotify_tokens.json'")
         print(f'\nDuration of the temporary credentials: {token_json["expires_in"]} seconds')
         print(f"Creation time of credentials: {creation_time}")
         print(f'Expiration time of credentials: {expiration_time}')

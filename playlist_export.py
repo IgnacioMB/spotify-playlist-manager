@@ -5,11 +5,11 @@ TO CSV FILES
 from spotify_functions import *
 
 print("\nThis script will export all playlists of a Spotify user account into .csv files.")
-print("It assumes you have already generated the necessary credentials and stored them in './tokens.json'")
+print("It assumes you have already generated the necessary credentials and stored them in './spotify_tokens.json'")
 print("If you have not, use './get_credentials.py' to generate a new set of credentials")
 
 # reading the credentials
-spotify_credentials = read_jsonfile_as_dict("tokens.json")
+spotify_credentials = read_jsonfile_as_dict("spotify_tokens.json")
 
 if credential_check(required_scopes=["playlist-read-private", "user-library-read"],
                     credentials_dict=spotify_credentials):

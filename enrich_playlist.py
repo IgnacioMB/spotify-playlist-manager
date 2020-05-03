@@ -10,7 +10,7 @@ print("It also adds the album detailed info to each song")
 print("The outputs is stored in a new playlist csv file in the './enriched_playlists' folder")
 
 # reading the credentials to read user private playlists
-spotify_credentials = read_jsonfile_as_dict("tokens.json")
+spotify_credentials = read_jsonfile_as_dict("spotify_tokens.json")
 
 if credential_check(required_scopes=None, credentials_dict=spotify_credentials):
 

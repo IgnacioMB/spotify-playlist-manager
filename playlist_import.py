@@ -10,7 +10,7 @@ import sys
 print("\nThis script will import a playlist (in csv) into a Spotify user's account")
 
 # read the credentials to modify user private playlists
-spotify_credentials = read_jsonfile_as_dict("tokens.json")
+spotify_credentials = read_jsonfile_as_dict("spotify_tokens.json")
 
 if credential_check(required_scopes=["playlist-modify-private"], credentials_dict=spotify_credentials):
 

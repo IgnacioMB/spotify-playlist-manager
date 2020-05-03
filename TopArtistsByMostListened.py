@@ -30,7 +30,7 @@ if mod_selector == "s":
     time_range = "short_term"
 
 # reading the credentials to read user name
-spotify_credentials = read_jsonfile_as_dict("tokens.json")
+spotify_credentials = read_jsonfile_as_dict("spotify_tokens.json")
 
 if credential_check(required_scopes=None, credentials_dict=spotify_credentials):
 
