@@ -12,7 +12,7 @@ print("\nThis script will import a playlist (in csv) into a Spotify user's accou
 # read the credentials to modify user private playlists
 spotify_credentials = read_jsonfile_as_dict("spotify_tokens.json")
 
-if credential_check(required_scopes=["playlist-modify-private"], credentials_dict=spotify_credentials):
+if spotify_credential_check(required_scopes=["playlist-modify-private"], credentials_dict=spotify_credentials):
 
     access_token = spotify_credentials["access_token"]
     refresh_token = spotify_credentials["refresh_token"]
@@ -28,12 +28,12 @@ if credential_check(required_scopes=["playlist-modify-private"], credentials_dic
 
     new_playlist_name = playlist_name + " copy"
 
-    created, details = create_playlist(user_id=user_id,
-                                       access_token=access_token,
-                                       name=new_playlist_name,
-                                       public=False,
-                                       collaborative=False,
-                                       description=f"This is a copy of the playlist {playlist_name}")
+    created, details = spotify_create_playlist(user_id=user_id,
+                                               access_token=access_token,
+                                               name=new_playlist_name,
+                                               public=False,
+                                               collaborative=False,
+                                               description=f"This is a copy of the playlist {playlist_name}")
 
     new_playlist_id = details["id"]
 

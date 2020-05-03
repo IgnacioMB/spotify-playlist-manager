@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 # reading the credentials to read user name
 spotify_credentials = read_jsonfile_as_dict("spotify_tokens.json")
 
-if credential_check(required_scopes=None, credentials_dict=spotify_credentials):
+if spotify_credential_check(required_scopes=None, credentials_dict=spotify_credentials):
 
     access_token = spotify_credentials["access_token"]
     refresh_token = spotify_credentials["refresh_token"]

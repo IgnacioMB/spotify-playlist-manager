@@ -1,34 +1,13 @@
 """
-PROJECT FUNCTIONS
+PROJECT FUNCTIONS THAT RELATE TO THE SPOTIFY WEB API
 """
 
-import pandas as pd
-import json
 import datetime
-import sys
 import requests
-import re
-import os
+from utility_functions import *
 
 
-def read_jsonfile_as_dict(filename):
-
-    """
-    Reads a json file and returns a dictionary
-    :param filename: string with path and filename i.e. "./folder/file.json"
-    :return: a dictionary
-    """
-    try:
-        with open(filename) as json_file:
-            json_dict = json.load(json_file)
-    except FileNotFoundError:
-        print(f"\nJSON file '{filename}' could not be found!")
-        sys.exit(1)
-
-    return json_dict
-
-
-def credential_check(credentials_dict, required_scopes=None):
+def spotify_credential_check(credentials_dict, required_scopes=None):
 
     """
 
@@ -92,7 +71,7 @@ def credential_check(credentials_dict, required_scopes=None):
     return check
 
 
-def get_all_playlists_df(access_token):
+def spotify_get_all_playlists_df(access_token):
 
     """
     Reads the catalogue of playlists created or followed by the user and returns it as a DataFrame
@@ -397,7 +376,7 @@ def get_spotify_profile_details(access_token):
         print(f"Error - Request for user profile details failed - Status code: {response.status_code}")
 
 
-def create_playlist(user_id, access_token, name, public, collaborative, description):
+def spotify_create_playlist(user_id, access_token, name, public, collaborative, description):
     """
     Creates a playlist in the user account identified by the user_id
 
@@ -472,21 +451,6 @@ def add_song_to_playlist(playlist_id, access_token, song_uri, position):
     return added, details
 
 
-def read_csv_file(csv_filename, folder):
-    """
-    Reads a csv file into a DataFrame
-    :param csv_filename: str
-    :return: DataFrame
-    """
-
-    try:
-        playlist_df = pd.read_csv(f"{folder}/{csv_filename}")
-        return playlist_df
-
-    except FileNotFoundError:
-        print(f"\nError - Could not find the file: {csv_filename} in the folder {folder}")
-
-
 def read_playlist_folder(folder):
 
     """
@@ -509,11 +473,6 @@ def read_playlist_folder(folder):
     output_df.reset_index(drop=True, inplace=True)
 
     return output_df
-
-
-def file_exists(filename, folder):
-
-    return os.path.isfile(f"{folder}/{filename}")
 
 
 def get_track_audio_features(track_id, access_token):
@@ -572,35 +531,6 @@ def get_album_info(album_id, access_token):
         output = None
 
     return successful, output
-
-
-def unpack_list_series(series):
-    """
-
-    Takes a Pandas Series in which each row has a lists of values
-    i.e. row 1 = ['a','b']      row 2 = ['b','b']
-
-    and returns another Pandas Series
-    in which each individual value takes a row, also repeated values
-
-    i.e. row 1 = ['a']      row 2 = ['b']     row 3 = ['b']      row 4 = ['b']
-
-    :param series:
-    :return: series
-    """
-    return pd.Series(sum(list(series.values), []))
-
-
-def only_alphanumeric(string):
-
-    """
-    Strips all non alphanumeric characters from a string
-
-    :param string: str with or without non alphanumeric chars
-    :return: str with only alphanumeric chars
-    """
-
-    return re.sub(re.compile('\W'), '', string)
 
 
 def load_playlist_from_input(playlist_folder):

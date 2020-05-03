@@ -11,8 +11,8 @@ print("If you have not, use './get_credentials.py' to generate a new set of cred
 # reading the credentials
 spotify_credentials = read_jsonfile_as_dict("spotify_tokens.json")
 
-if credential_check(required_scopes=["playlist-read-private", "user-library-read"],
-                    credentials_dict=spotify_credentials):
+if spotify_credential_check(required_scopes=["playlist-read-private", "user-library-read"],
+                            credentials_dict=spotify_credentials):
 
     access_token = spotify_credentials["access_token"]
     refresh_token = spotify_credentials["refresh_token"]
@@ -24,7 +24,7 @@ if credential_check(required_scopes=["playlist-read-private", "user-library-read
     # get list of playlists
     print(f"\nRetrieving list of playlists created and followed by the user {user_id}")
 
-    successful, playlists_df = get_all_playlists_df(access_token=access_token)
+    successful, playlists_df = spotify_get_all_playlists_df(access_token=access_token)
 
     if successful:
         print("\nSuccess: User playlists:\n")
