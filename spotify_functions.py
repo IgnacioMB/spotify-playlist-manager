@@ -590,7 +590,10 @@ def get_song_uri(access_token, song_name, artist):
 
     if response.status_code == 200:
         print(f"Spotify uri for song: {song_name} requested successfully")
-        output = response.json()['tracks']['items'][0]['uri']
+        try:
+            output = response.json()['tracks']['items'][0]['uri']
+        except IndexError:
+            print(f"Error: No match found in Spotify for song: {song_name}")
 
     else:
         print(f"Error: Request for Spotify uri of song: {song_name} failed - Status code: {response.status_code}")

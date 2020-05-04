@@ -101,6 +101,19 @@ if spotify_credential_check(required_scopes=["playlist-modify-private"], credent
                 lambda x: youtube_dl.YoutubeDL({}).extract_info(url=x,
                                                                 download=False)["track"])
 
+            # manually parse results for which youtube_dl retrieved no data
+            for index, row in songs_df.iterrows():
+
+                if pd.isna(row["artist"]):
+                    songs_df.at[index, 'artist'] = row["title"].split("-")[0]
+
+                if pd.isna(row["song_name"]):
+                    if "(" not in row["title"].split("-")[1]:
+                        songs_df.at[index, "song_name"] = row["title"].split("-")[1].strip()
+                    else:
+                        songs_df.at[index, "song_name"] = row["title"].split("-")[1].split("(")[0].strip()
+
+
             # search each song on Spotify DB to obtain spotify uri of each track
             print(f"\nSearching for songs in Youtube playlist {playlist_title} in the Spotify DB\n")
 
