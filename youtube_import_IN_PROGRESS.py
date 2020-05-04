@@ -4,11 +4,14 @@ AND CREATE ONE SPOTIFY PLAYLIST PER YOUTUBE PLAYLIST
 WITH THE SONGS IN THEM
 
     WORK IN PROGRESS!!!
+
+    current status: reads up to a max of 50 playlist items per playlist, does not retrieve liked videos
 """
 
 from spotify_functions import *
 from youtube_functions import *
 import youtube_dl
+
 pd.options.mode.chained_assignment = None
 
 # get Spotify credentials and check they are valid to create playlists
