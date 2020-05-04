@@ -4,6 +4,7 @@ PROJECT FUNCTIONS THAT RELATE TO THE SPOTIFY WEB API
 
 import datetime
 import requests
+import numpy as np
 from utility_functions import *
 
 
@@ -418,7 +419,7 @@ def spotify_create_playlist(user_id, access_token, name, public, collaborative, 
     return created, details
 
 
-def add_song_to_playlist(playlist_id, access_token, song_uri, position):
+def add_song_to_playlist(playlist_id, access_token, song_uri, position=None):
 
     """
     Adds a song to the playlist specified by the playlist_id
@@ -426,7 +427,7 @@ def add_song_to_playlist(playlist_id, access_token, song_uri, position):
     :param playlist_id: string
     :param access_token: string, required scope 'playlist-modify-private'
     :param song_uri: string
-    :param position: integer
+    :param position: integer, if 0 songs prepended, if not provided appended
     :return: a boolean confirming addition and a dictionary with the details if successful
     """
 
@@ -434,7 +435,9 @@ def add_song_to_playlist(playlist_id, access_token, song_uri, position):
 
     query = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
     query += f"?uris={song_uri}"
-    query += f"&position={position}"
+
+    if position is not None:
+        query += f"&position={position}"
 
     headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
 
@@ -561,3 +564,36 @@ def load_playlist_from_input(playlist_folder):
     playlist_df = read_csv_file(csv_filename=csv_filename, folder=playlist_folder)
 
     return playlist_name, playlist_df
+
+
+def get_song_uri(access_token, song_name, artist):
+    """
+    Searches on Spotify DB for a song
+    based on the song name and artist name provided
+
+    If it finds matches returns Spotify uri of first match
+    if not returns np.nan
+
+    :param access_token:
+    :param song_name:
+    :param artist:
+    :return:
+    """
+
+    query = f"https://api.spotify.com/v1/search"
+    query += f"?q=artist:{artist} track:{song_name}"
+    query += "&type=track"
+
+    headers = {"Authorization": f"Bearer {access_token}"}
+
+    response = requests.get(url=query, headers=headers)
+
+    if response.status_code == 200:
+        print(f"Spotify uri for song: {song_name} requested successfully")
+        output = response.json()['tracks']['items'][0]['uri']
+
+    else:
+        print(f"Error: Request for Spotify uri of song: {song_name} failed - Status code: {response.status_code}")
+        output = np.nan
+
+    return output
