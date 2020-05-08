@@ -100,6 +100,8 @@ def spotify_get_all_playlists_df(access_token):
 
         playlists_df["track_count"] = playlists_df["tracks"].apply(lambda x: x["total"])
 
+        playlists_df["name"] = playlists_df["name"].str.replace("/", "")
+
         playlists_df = playlists_df[["id", "name", "track_count"]]
 
         output = playlists_df
