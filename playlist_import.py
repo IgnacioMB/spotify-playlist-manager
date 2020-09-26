@@ -6,6 +6,7 @@ It adds them in inverse order of addition to the original playlist (latest songs
 
 from spotify_functions import *
 import sys
+import time
 
 print("\nThis script will import a playlist (in csv) into a Spotify user's account")
 
@@ -37,12 +38,16 @@ if spotify_credential_check(required_scopes=["playlist-modify-private"], credent
 
     new_playlist_id = details["id"]
 
+    reverse = input("Type (0) to upload the playlist in the original order or (1) to reverse it before upload: ")
+
+    if reverse == '1':
+        playlist_df = playlist_df.iloc[::-1].copy()
+
     for index, row in playlist_df.iterrows():
 
         added, details = add_song_to_playlist(playlist_id=new_playlist_id,
                                               access_token=access_token,
-                                              song_uri=row["spotify_uri"],
-                                              position=0)
+                                              song_uri=row["spotify_uri"])
 
         if added:
             print(f"Song: {row['name']} added to playlist {new_playlist_name} successfully")
